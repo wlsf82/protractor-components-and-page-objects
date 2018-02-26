@@ -1,0 +1,43 @@
+{
+    "env": {
+        "es6": true,
+        "node": true,
+        "browser": true,
+        "jasmine": true,
+        "protractor": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "sourceType": "module"
+    },
+    "rules": {
+        "arrow-body-style": [
+            "error",
+            "as-needed"
+        ],
+        "arrow-parens": [
+            "error",
+            "as-needed"
+        ],
+        "indent": [
+            "error",
+            4
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "double"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "no-var": 2,
+        "one-var": 0,
+        "prefer-const": 2,
+        "prefer-arrow-callback": 2
+    }
+}
