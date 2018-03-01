@@ -47,7 +47,7 @@ We will still use Page Objects, but they will be simpler than we are used to.
 
 A Page Object is defined by a relative URL and one or more components. In our case, the `ContactPage` page object would look like this:
 
-```
+```js
 // test/e2e/page-objects/contact.js
 
 const FormComponent = require("../components/form/main");
@@ -69,7 +69,7 @@ Note that it starts requiring the `FormComponent` and the class itself has only 
 
 Now let's examine the `FormComponent`.
 
-```
+```js
 // test/e2e/components/form/main.js
 
 const helper = require("protractor-helper");
@@ -117,7 +117,7 @@ Now that we understood how the main or parent component works, let's dive into e
 
 ### Buttons component definition
 
-```
+```js
 // test/e2e/components/form/buttons.js
 
 class Buttons {
@@ -140,7 +140,7 @@ And finally it defines its own elements, based on its own `container`.
 
 ### Fields component definition
 
-```
+```js
 // test/e2e/components/form/fields.js
 
 class Fields {
@@ -161,7 +161,7 @@ And then we see the definition of its own elements, the `name` and `message` fie
 
 ### Header component definition
 
-```
+```js
 // test/e2e/components/form/header.js
 
 class Header {
@@ -185,7 +185,7 @@ Now let's see how a test file would look like.
 
 ### Test definition
 
-```
+```js
 // test/e2e/specs/contact.spec.js
 
 const helper = require("protractor-helper");
@@ -243,7 +243,7 @@ In the test file it's interesting to pay more attention at some new things, diff
 - When running the `browser.get()` in the `beforeEach` statement the `relativeUrl` of the `contactPage` is used (this will be concatenated with the `baseUrl` defined in the `protractor.conf.js` file).
 - When running the test's **actions** (from arrange, **act**, assert), the following structure is used:
 
-```
+```js
 // 1st test
 contactPage.form.fillWithDataAndSubmit(data);
 
@@ -258,7 +258,7 @@ Note how easy it became to access the page object's components, sub-components a
 
 An example of an expectation, not using the `protractor-helper`, could be something like this:
 
-```
+```js
 expect(contactPage.form.header.heading.getText()).toEqual("Contact");
 ```
 
