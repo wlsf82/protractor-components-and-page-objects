@@ -39,7 +39,7 @@ The fieldset component contains two elements. An input field (Name) and a text a
 
 And the actions component contains two elements as well, the Cancel and Submit buttons.
 
-Ok, now that we have separated our web page in a parent and sub-component, and that our sub-components contain their elements, how differently than creating E2E with Page Objects only would it be?
+Ok, now that we have separated our web page in a parent and sub-components, and that our sub-components contain their elements, how differently than creating E2E with Page Objects only would it be?
 
 We will still use Page Objects, but they will be simpler than we are used to.
 
