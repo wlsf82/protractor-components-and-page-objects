@@ -4,7 +4,7 @@ This sample project intends to demonstrate an architecture proposal for writing 
 
 ## The inspiration
 
-In October, 2017 I went to Berlin for the SeleniumConf and I watched a presentation by Archit Pal Singh Sachdeva, Software Engineer at Facebook, about [readable, stable and maintainable E2E testing](https://www.seleniumconf.de/talks#archit-pal-singh-sachdeva), and this presentation made me re-think on how GUI E2E tests are written, where the main solution for code organization and maitainability is usually the use of the [Page Objects](https://github.com/SeleniumHQ/selenium/wiki/PageObjects) pattern.
+In October, 2017 I went to Berlin for the SeleniumConf and I watched a presentation by Archit Pal Singh Sachdeva, Software Engineer at Facebook, about [readable, stable and maintainable E2E testing](https://www.seleniumconf.de/talks#archit-pal-singh-sachdeva), and this presentation made me re-think on how GUI E2E tests are written, where the main solution for code organization and maintainability is usually the use of the [Page Objects](https://github.com/SeleniumHQ/selenium/wiki/PageObjects) pattern.
 But what about using Page Objects together with test components?
 
 ## The project structure
@@ -39,9 +39,9 @@ The fieldset component contains two elements. An input field (Name) and a text a
 
 And the actions component contains two elements as well, the Cancel and Submit buttons.
 
-Ok, now that we have separated our web page in a parent and sub-components, and that our sub-components contain their elements, how differently than creating E2E with Page Objects only would it be?
+Ok, now that we have separated our web page in a parent component and three sub-components, and that our sub-components contain their own elements, how differently would it be the creation of E2E tests when comparing the usage of only page objects or the usage of page objects together with components?
 
-We will still use Page Objects, but they will be simpler than we are used to.
+Let's see.
 
 ### Page object definition
 
@@ -63,7 +63,7 @@ class Contact {
 module.exports = Contact;
 ```
 
-Note that it starts requiring the `FormComponent` and the class itself has only a `relativeUrl` and a `form` attributes, the first with a string and the second as an instance of the `FormComponent`.
+Note that it starts requiring the `FormComponent` and the class itself has only a `relativeUrl` and a `form` attributes in the `constructor`, the first with a string and the second as an instance of the `FormComponent`.
 
 ### Form component definition
 
@@ -97,21 +97,21 @@ class Form {
 module.exports = Form;
 ```
 
-First of all, the `Form` component requires an external library (`protractor-helper`). This will be used in a component's method.
+First of all, the `Form` component requires an external library (`protractor-helper`). This will be used in the component's method `fillWithDataAndSubmit`.
 
-The `Form` component also requires its sub-components (`ButtonsComponent`, `HeaderComponent` and `FieldsComponent`) in the beginning.
+The `Form` component also requires its sub-components (`ButtonsComponent`, `HeaderComponent` and `FieldsComponent`) in the beginning, right after requiring the external library (`protractor-helper`).
 
-Then, differently of the page object, instead of having as first attribute a relative URL it has a `container` element, which in this case is a `form`.
+Then, differently of the page object, instead of having as first attribute a relative URL, it has a `container` element, which in this case is a `form`.
 
-After that it instantiates its sub-components (`buttons`, `header` and `fields`).
+After that, it instantiates its sub-components (`buttons`, `header` and `fields`).
 
-> Note that differently of the instance of the `FormComponent` in the page object, when instantiating the sub-components it pass its `container` as argument to each sub-component constructor. This helps in the creation of stable tests, where we're sure that the elements we are interacting with or running expectations on are the correct ones.
+> Note that differently of the instance of the `FormComponent` in the page object, when instantiating the sub-components it pass its `container` as argument to each sub-component constructor. This helps in the creation of stable tests, where we'll be sure that the elements we are interacting with, or we are running expectations on, are the correct ones.
 
-And finally it defines the `fillWithDataAndSubmit` method, that receives a `data` object as argument and uses this data for filling the form with and submitting it.
+And finally, it defines the `fillWithDataAndSubmit` method, that receives a `data` object as an argument and uses this data for filling the form with and submitting it.
 
-The `fillWithDataAndSubmit` method uses the `helper` defined in the beginning of the file to ensure it will interact with the elements only when they are ready for it.
+The `fillWithDataAndSubmit` method uses the `helper` defined in the beginning of the file to ensure that it will interact with the elements only when they are ready for it.
 
-> Note that for clicking in the submit button, for example, it uses the following structure as argument of the `helper.clickWhenClickable` method: `this.buttons.submit`, which means, clicks in the `submit` button from the `buttons` sub-component.
+> Note that for clicking on the submit button, for example, it uses the following structure as the argument of the `helper.clickWhenClickable` method: `this.buttons.submit`, which means, clicks in the `submit` button from the `buttons` sub-component.
 
 Now that we understood how the main or parent component works, let's dive into each of the sub-components.
 
@@ -134,9 +134,9 @@ module.exports = Buttons;
 
 Since the parent element pass to it its `container`, the `constructor` of the `Buttons` component expects a `parentElement` as parameter.
 
-Then, for the creation of its `container` it uses the `parentElement` (`parentElement.element(by.className("actions"));`)
+Then, for the creation of its own `container` it uses the `parentElement` (`parentElement.element(by.className("actions"));`)
 
-And finally it defines its own elements, based on its own `container`.
+And finally, it defines its own elements, based on its own `container`.
 
 ### Fields component definition
 
@@ -177,9 +177,9 @@ module.exports = Header;
 
 The same applies to the `Header` component in terms of the `parentElement` as parameter of the `constructor` and in the creation of its own `container`.
 
-And finally it defines a `heading` element, based on its own `container`.
+And finally, it defines a `heading` element, based on its own `container`.
 
-> All of them, page object and components, are exported with `module.exports` to be used in the tests themselves.
+> All of them, page object and components, are exported with `module.exports` to expose their APIs for usage, on tests, for example.
 
 Now let's see how a test file would look like.
 
@@ -230,16 +230,16 @@ describe("when accessing the relative URL 'contact'", () => {
 
                 contactPage.form.fillWithDataAndSubmit(invalidDataSet);
 
-                // @TODO: add expectations
+                // @TODO: add expectation
             });
         });
     });
 });
 ```
 
-In the test file it's interesting to pay more attention at some new things, different than when using only page objects.
+In the test file it's worth paying more attention to some new things, different than when using only page objects.
 
-- Only the page object is required at the top of the file. There is no need to require the components since they are already available through the page object, but this doesn't mean you can't require components, but in this case the page object is enough.
+- Only the page object is required at the top of the file. There is no need to require the components since they are already available through the page object, but this doesn't mean you can't require components, but in this case, the page object is enough.
 - When running the `browser.get()` in the `beforeEach` statement the `relativeUrl` of the `contactPage` is used (this will be concatenated with the `baseUrl` defined in the `protractor.conf.js` file).
 - When running the test's **actions** (from arrange, **act**, assert), the following structure is used:
 
@@ -254,7 +254,7 @@ helper.clickWhenClickable(contactPage.form.buttons.submit);
 contactPage.form.fillWithDataAndSubmit(invalidDataSet);
 ```
 
-Note how easy it became to access the page object's components, sub-components and its elements.
+Note how easy it became to access the page object's components, sub-components, and its elements.
 
 An example of an expectation, not using the `protractor-helper`, could be something like this:
 
@@ -262,13 +262,13 @@ An example of an expectation, not using the `protractor-helper`, could be someth
 expect(contactPage.form.header.heading.getText()).toEqual("Contact");
 ```
 
-This expectation tells to Protractor the follwing: get the text of the `heading` element that is contained in the `header` sub-component of the `form` parent component of the `contactPage` page object.
+This expectation tells Protractor the following: get the text of the `heading` element that is contained in the `header` sub-component of the `form` parent component of the `contactPage` page object.
 
 ## Conclusion
 
-By writing tests using not only page objects, but also the concept of test components, we can benefit of:
+By writing tests using not only page objects but also the concept of test components, we can benefit from:
 - smaller classes that are easier to read and maintain
-- well defined web elements, since we pass the containers of the parent components to the constructor of the sub-components, making sure we will interact with the correct elements in cases of elements with the same css selector structure but in different parts of the application
+- well defined web elements, since we pass the container of the parent components to the constructor of the sub-components, making sure we will interact with the correct elements in cases of elements with the same CSS selector structure but in different parts of the application
 - more reliable test cases
 
 ___
