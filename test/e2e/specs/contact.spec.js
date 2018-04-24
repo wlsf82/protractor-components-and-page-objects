@@ -25,7 +25,7 @@ describe("when accessing the relative URL 'contact'", () => {
     describe("alternate paths", () => {
         describe("when submitting the form without filling name and message", () => {
             it("shows required fields in red, meaning error", () => {
-                helper.clickWhenClickable(contactPage.form.buttons.submit);
+                helper.clickWhenClickable(contactPage.form.submitButton);
 
                 // @TODO: add expectations
             });

@@ -27,25 +27,15 @@ Alright, let's imagine a simple web page like this:
 -----------------------------------
 ```
 
-Now let's try to think on different components that compose this page.
+Now, let's say this page is composed by a form component, with a header element (Contact), two input field elements (Name and Message) and two button elements (Cancel and Submit).
 
-Firstly we can say that the whole page is the main or parent component. It could be called the form component in this context.
-
-Then we have three sub-components: the header, the fieldset, and the actions.
-
-The header sub-component has only the title (Contact) and it could be an h1 tag for example.
-
-The fieldset component contains two elements. An input field (Name) and a text area field (Message).
-
-And the actions component contains two elements as well, the Cancel and Submit buttons.
-
-Ok, now that we have separated our web page in a parent component and three sub-components, and that our sub-components contain their own elements, how differently would it be the creation of E2E tests when comparing the usage of only page objects or the usage of page objects together with components?
+Ok, but you may be asking yourself, what is the difference between creating E2E tests using Page Objects and Components when comparing to the usage of only Page Objects?
 
 Let's see.
 
 ### Page object definition
 
-A Page Object is defined by a relative URL and one or more components. In our case, the `ContactPage` page object would look like this:
+A Page Object is defined by a relative URL and one or more components. In our case, the `Contact` Page Object would look like this:
 
 ```js
 // test/e2e/page-objects/contact.js
@@ -63,7 +53,9 @@ class Contact {
 module.exports = Contact;
 ```
 
-Note that it starts requiring the `FormComponent` and the class itself has only a `relativeUrl` and a `form` attributes in the `constructor`, the first with a string and the second as an instance of the `FormComponent`.
+Note that it starts requiring the `FormComponent` in the beginning and the class itself has only two attributes in the constructor, a `relativeUrl` with a string as value and a `form`, as an instance of the `FormComponent`.
+
+In other words, the page object has no definition of the elements themselves, it just instantiates the component(s) that compose the page, which makes the code simple and separates better the responsibilities.
 
 ### Form component definition
 
@@ -74,112 +66,42 @@ Now let's examine the `FormComponent`.
 
 const helper = require("protractor-helper");
 
-const ButtonsComponent = require("./buttons");
-const FieldsComponent = require("./fields");
-const HeaderComponent = require("./header");
-
 class Form {
     constructor() {
         this.container = element(by.css("form"));
 
-        this.buttons = new ButtonsComponent(this.container);
-        this.fields = new FieldsComponent(this.container);
-        this.header = new HeaderComponent(this.container);
+        this.header = this.container.element(by.css("header h1"));
+        this.nameField = this.container.element(by.css(".fields #name"));
+        this.messageField = this.container.element(by.css(".fields #message"));
+        this.cancelButton = this.container.element(by.css(".actions .cancel-button"));
+        this.submitButton = this.container.element(by.css(".actions input[type='submit']"));
     }
 
     fillWithDataAndSubmit(data) {
-        helper.fillFieldWithTextWhenVisible(this.fields.name, data.name);
-        helper.fillFieldWithTextWhenVisible(this.fields.message, data.message);
-        helper.clickWhenClickable(this.buttons.submit);
+        helper.fillFieldWithTextWhenVisible(this.nameField, data.name);
+        helper.fillFieldWithTextWhenVisible(this.messageField, data.message);
+        helper.clickWhenClickable(this.submitButton);
     }
 }
 
 module.exports = Form;
 ```
 
-First of all, the `Form` component requires an external library (`protractor-helper`). This will be used in the component's method `fillWithDataAndSubmit`.
+First of all, the `Form` component requires an external library (`protractor-helper`). This will be used in the component's method `fillWithDataAndSubmit` to interact with the elements only when they are ready for it.
 
-The `Form` component also requires its sub-components (`ButtonsComponent`, `HeaderComponent` and `FieldsComponent`) in the beginning, right after requiring the external library (`protractor-helper`).
+Then, differently of the Page Object, instead of having as first attribute of the constructor a relative URL, it has a `container` element, which in this case is a `form`. This `container` is used in the definition of any other element of this component, to ensure that the elements are the right ones, meaning that in the DOM the elements are inside their parent element (the `container` element).
 
-Then, differently of the page object, instead of having as first attribute a relative URL, it has a `container` element, which in this case is a `form`.
-
-After that, it instantiates its sub-components (`buttons`, `header` and `fields`).
-
-> Note that differently of the instance of the `FormComponent` in the page object, when instantiating the sub-components it pass its `container` as argument to each sub-component constructor. This helps in the creation of stable tests, where we'll be sure that the elements we are interacting with, or we are running expectations on, are the correct ones.
+As you can see, all other elements (`header`, `nameField`, `messageField`, `cancelButton` and `submitButton` are defined based on their parent (the `container` element)).
 
 And finally, it defines the `fillWithDataAndSubmit` method, that receives a `data` object as an argument and uses this data for filling the form with and submitting it.
 
-The `fillWithDataAndSubmit` method uses the `helper` defined in the beginning of the file to ensure that it will interact with the elements only when they are ready for it.
+The `fillWithDataAndSubmit` method uses the `helper` defined in the beginning of the file to ensure that it will interact with the elements only when they are ready for it, as previously mentioned.
 
-> Note that for clicking on the submit button, for example, it uses the following structure as the argument of the `helper.clickWhenClickable` method: `this.buttons.submit`, which means, clicks in the `submit` button from the `buttons` sub-component.
+> By using this practice we give the component the responsibilities of defining the elements and methods, and nothing else.
 
-Now that we understood how the main or parent component works, let's dive into each of the sub-components.
+___
 
-### Buttons component definition
-
-```js
-// test/e2e/components/form/buttons.js
-
-class Buttons {
-    constructor(parentElement) {
-        this.container = parentElement.element(by.className("actions"));
-
-        this.cancel = this.container.element(by.className("cancel-button"));
-        this.submit = this.container.element(by.css("input[type='submit']"));
-    }
-}
-
-module.exports = Buttons;
-```
-
-Since the parent element pass to it its `container`, the `constructor` of the `Buttons` component expects a `parentElement` as parameter.
-
-Then, for the creation of its own `container` it uses the `parentElement` (`parentElement.element(by.className("actions"));`)
-
-And finally, it defines its own elements, based on its own `container`.
-
-### Fields component definition
-
-```js
-// test/e2e/components/form/fields.js
-
-class Fields {
-    constructor(parentElement) {
-        this.container = parentElement.element(by.className("fields"));
-
-        this.name = this.container.element(by.id("name"));
-        this.message = this.container.element(by.id("message"));
-    }
-}
-
-module.exports = Fields;
-```
-
-The same applies to the `Fields` component in terms of the `parentElement` as parameter of the `constructor` and in the creation of its own `container`.
-
-And then we see the definition of its own elements, the `name` and `message` fields.
-
-### Header component definition
-
-```js
-// test/e2e/components/form/header.js
-
-class Header {
-    constructor(parentElement) {
-        this.container = parentElement.element(by.css("header"));
-
-        this.heading = this.container.element(by.css("h1"));
-    }
-}
-
-module.exports = Header;
-```
-
-The same applies to the `Header` component in terms of the `parentElement` as parameter of the `constructor` and in the creation of its own `container`.
-
-And finally, it defines a `heading` element, based on its own `container`.
-
-> All of them, page object and components, are exported with `module.exports` to expose their APIs for usage, on tests, for example.
+> Note: Page Object and components are exported with `module.exports` to expose their APIs for usage, on tests, for example.
 
 Now let's see how a test file would look like.
 
@@ -215,7 +137,7 @@ describe("when accessing the relative URL 'contact'", () => {
     describe("alternate paths", () => {
         describe("when submitting the form without filling name and message", () => {
             it("shows required fields in red, meaning error", () => {
-                helper.clickWhenClickable(contactPage.form.buttons.submit);
+                helper.clickWhenClickable(contactPage.form.submitButton);
 
                 // @TODO: add expectations
             });
@@ -230,17 +152,17 @@ describe("when accessing the relative URL 'contact'", () => {
 
                 contactPage.form.fillWithDataAndSubmit(invalidDataSet);
 
-                // @TODO: add expectation
+                // @TODO: add expectations
             });
         });
     });
 });
 ```
 
-In the test file it's worth paying more attention to some new things, different than when using only page objects.
+In the test file it's worth paying attention to some things.
 
-- Only the page object is required at the top of the file. There is no need to require the components since they are already available through the page object, but this doesn't mean you can't require components, but in this case, the page object is enough.
-- When running the `browser.get()` in the `beforeEach` statement the `relativeUrl` of the `contactPage` is used (this will be concatenated with the `baseUrl` defined in the `protractor.conf.js` file).
+- Only the page object is required at the top of the file. There is no need to require the component since it is already available through the Page Object.
+- When running the `browser.get()` in the `beforeEach` statement with pass the `relativeUrl` of the `contactPage` as argument (this will be concatenated with the `baseUrl` defined in the `protractor.conf.js` file).
 - When running the test's **actions** (from arrange, **act**, assert), the following structure is used:
 
 ```js
@@ -248,28 +170,31 @@ In the test file it's worth paying more attention to some new things, different 
 contactPage.form.fillWithDataAndSubmit(data);
 
 // 2nd test
-helper.clickWhenClickable(contactPage.form.buttons.submit);
+helper.clickWhenClickable(contactPage.form.submitButton);
 
 // 3rd test
 contactPage.form.fillWithDataAndSubmit(invalidDataSet);
 ```
 
-Note how easy it became to access the page object's components, sub-components, and its elements.
+Note how easy it became to access the components, its elements and method(s) from the Page Object.
 
-An example of an expectation, not using the `protractor-helper`, could be something like this:
+An example of an expectation (since expectations were not written in the test example) could be something like this:
 
 ```js
-expect(contactPage.form.header.heading.getText()).toEqual("Contact");
+expect(contactPage.form.header.getText()).toEqual("Contact");
 ```
 
-This expectation tells Protractor the following: get the text of the `heading` element that is contained in the `header` sub-component of the `form` parent component of the `contactPage` page object.
+This expectation tells Protractor the following: get the text of the `header` element that is contained in the `form` component of the `contactPage` Page Object.
+
+> Note that the `protractor-helper` library is not used in the above example.
 
 ## Conclusion
 
-By writing tests using not only page objects but also the concept of test components, we can benefit from:
-- smaller classes that are easier to read and maintain
-- well defined web elements, since we pass the container of the parent components to the constructor of the sub-components, making sure we will interact with the correct elements in cases of elements with the same CSS selector structure but in different parts of the application
-- more reliable test cases
+By writing tests using not only Page Objects but also the concept of test components, we can benefit from:
+- having smaller classes that are easier to read and maintain.
+- we separate responsibilities, where Page Objects have only a relative URL and instances of the components they are composed by, while components define elements and methods.
+- we have better defined elements, because we pass the container element when defining the elements that will be used in the tests, making sure we will interact with the correct elements in cases of elements with the same CSS selector structure but in different parts of the application
+- we have more reliable test cases, because with define elements in a smarter way, but also because we use the `protractor-helper` library to interact with elements only when they are ready for it.
 
 ___
 
