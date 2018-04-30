@@ -178,7 +178,7 @@ contactPage.form.fillWithDataAndSubmit(invalidDataSet);
 
 Note how easy it became to access the components, its elements and method(s) from the Page Object.
 
-An example of an expectation (since expectations were not written in the test example) could be something like this:
+An example of an expectation, or **assertion**, (since expectations were not written in the test examples) could be something like this:
 
 ```js
 expect(contactPage.form.header.getText()).toEqual("Contact");
