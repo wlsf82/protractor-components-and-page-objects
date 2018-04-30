@@ -188,6 +188,14 @@ This expectation tells Protractor the following: get the text of the `header` el
 
 > Note that the `protractor-helper` library is not used in the above example.
 
+Another example of expectation, now using the `protractor-helper` library could look like this:
+
+```js
+helper.waitForTextToBePresentInElement(contactPage.form.header, "Contact");
+```
+
+Differently from the previous expectation, this one tells Protractor the following: wait for the text "Contact" to be present in the element `header` of the `form` component, of the `contactPage` page object.
+
 ## Conclusion
 
 By writing tests using not only Page Objects but also the concept of test components, we can benefit from:
