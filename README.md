@@ -195,6 +195,8 @@ By writing tests using not only Page Objects but also the concept of test compon
 - we separate responsibilities, where Page Objects have only a relative URL and instances of the components they are composed by, while components define elements and methods.
 - we have better defined elements, because we pass the container element when defining the elements that will be used in the tests, making sure we will interact with the correct elements in cases of elements with the same CSS selector structure but in different parts of the application
 - we have more reliable test cases, because with define elements in a smarter way, but also because we use the `protractor-helper` library to interact with elements only when they are ready for it.
+- different page objects can share already existing test components without the need for code duplication.
+- and in case we need we can even work with parent and child components.
 
 ___
 
