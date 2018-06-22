@@ -87,7 +87,7 @@ class Form {
 module.exports = Form;
 ```
 
-First of all, the `Form` component requires an external library (`protractor-helper`). This will be used in the component's method `fillWithDataAndSubmit` to interact with the elements only when they are ready for it.
+First of all, the `Form` component requires an external library ([`protractor-helper`](http://npmjs.com/package/protractor-helper)). This will be used in the component's method `fillWithDataAndSubmit` to interact with the elements only when they are ready for it.
 
 Then, differently of the Page Object, instead of having as first attribute of the constructor a relative URL, it has a `container` element, which in this case is a `form`. This `container` is used in the definition of any other element of this component, to ensure that the elements are the right ones, meaning that in the DOM the elements are inside their parent element (the `container` element).
 
@@ -162,7 +162,7 @@ describe("given I access the relative URL 'contact'", () => {
 In the test file it's worth paying attention to some things.
 
 - Only the page object is required at the top of the file. There is no need to require the component since it is already available through the Page Object.
-- When running the `browser.get()` in the `beforeEach` statement with pass the `relativeUrl` of the `contactPage` as argument (this will be concatenated with the `baseUrl` defined in the `protractor.conf.js` file).
+- When running the `browser.get()` in the `beforeEach` statement we pass the `relativeUrl` of the `contactPage` as argument (this will be concatenated with the `baseUrl` defined in the `protractor.conf.js` file).
 - When running the test's **actions** (from arrange, **act**, assert), the following structure is used:
 
 ```js
@@ -176,7 +176,7 @@ helper.clickWhenClickable(contactPage.form.submitButton);
 contactPage.form.fillWithDataAndSubmit(invalidDataSet);
 ```
 
-Note how easy it became to access the components, its elements and method(s) from the Page Object.
+Note how easy it becames to access the components, and its elements and method(s) from the Page Object.
 
 An example of an expectation, or **assertion**, (since expectations were not written in the test examples) could be something like this:
 
