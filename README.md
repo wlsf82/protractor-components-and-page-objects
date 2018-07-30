@@ -226,3 +226,7 @@ By writing tests using not only Page Objects but also the concept of test compon
 ___
 
 **Note: if you try to run the tests in this project they will all fail since the application under test doesn't really exist. This project was created only to explain the concepts of writing GUI E2E tests with Protractor using the concept of components.**
+
+___
+
+Made with 💚 by [Walmyr Filho](http://walmyr-filho.com)
