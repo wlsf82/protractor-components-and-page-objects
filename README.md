@@ -169,7 +169,7 @@ In the test file it's worth paying attention to some things.
 
 - Only the page object is required at the top of the file. There is no need to require the component since it is already available through the Page Object.
 - When running the `browser.get()` in the `beforeEach` statement we pass the `relativeUrl` of the `contactPage` as argument (this will be concatenated with the `baseUrl` defined in the `protractor.conf.js` file). If this relative URL changes, we need to update it only in a single place.
-- When running the test's **actions** and **assertions** (from arrange, **act**, **assert**), the following structure is used:
+- When running the test's **actions** and **assertions** (from [arrange, **act**, **assert**](http://wiki.c2.com/?ArrangeActAssert)), the following structure is used:
 
 ```js
 // 1st test
