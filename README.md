@@ -27,7 +27,7 @@ Alright, let's imagine a simple web page like this:
 -----------------------------------
 ```
 
-Now, let's say this page is composed by a form component, with a header element (Contact), two input field elements (Name and Message) and two button elements (Cancel and Submit).
+Now, let's say this page is composed by a form component, with a header element (Contact), one input field element (Name), one text area field (Message), and two button elements (Cancel and Submit).
 
 Ok, but you may be asking yourself, what is the difference between creating E2E tests using Page Objects and Components when comparing to the usage of only Page Objects?
 
@@ -97,11 +97,11 @@ And finally, it defines the `fillWithDataAndSubmit` method, that receives a `dat
 
 The `fillWithDataAndSubmit` method uses the `helper` defined in the beginning of the file to ensure that it will interact with the elements only when they are ready for it, as previously mentioned.
 
-> By using this practice we give the component the responsibilities of defining the elements and methods, and nothing else.
+> By using this practice we give the component the responsibilities of defining the elements and methods, nothing else.
 
 ___
 
-> Note: Page Object and components are exported with `module.exports` to expose their APIs for usage, on tests, for example.
+> Page Object and components are exported with `module.exports` to expose their APIs for usage, on tests, for example.
 
 Now let's see how a test file would look like.
 
@@ -168,29 +168,40 @@ describe("given I access the relative URL 'contact'", () => {
 In the test file it's worth paying attention to some things.
 
 - Only the page object is required at the top of the file. There is no need to require the component since it is already available through the Page Object.
-- When running the `browser.get()` in the `beforeEach` statement we pass the `relativeUrl` of the `contactPage` as argument (this will be concatenated with the `baseUrl` defined in the `protractor.conf.js` file).
-- When running the test's **actions** (from arrange, **act**, assert), the following structure is used:
+- When running the `browser.get()` in the `beforeEach` statement we pass the `relativeUrl` of the `contactPage` as argument (this will be concatenated with the `baseUrl` defined in the `protractor.conf.js` file). If this relative URL changes, we need to update it only in a single place.
+- When running the test's **actions** and **assertions** (from arrange, **act**, **assert**), the following structure is used:
 
 ```js
 // 1st test
+// Act
 contactPage.form.fillWithDataAndSubmit(data);
+// Assert
+expect(contactPage.nameField.getText()).toEqual("");
+expect(contactPage.messageField.getText()).toEqual("");
 
 // 2nd test
+// Act
 helper.clickWhenClickable(contactPage.form.submitButton);
+// Assert
+expect(contactPage.nameField.getAttribute("warning-color")).toEqual("red");
+expect(contactPage.messageField.getAttribute("warning-color")).toEqual("red");
 
 // 3rd test
+// Act
 contactPage.form.fillWithDataAndSubmit(invalidDataSet);
+// Assert
+expect(contactPage.messageField.getAttribute("warning-color")).toEqual("red");
 ```
 
 Note how easy it becames to access the components, and its elements and method(s) from the Page Object.
 
-An example of an expectation, or **assertion**, (since expectations were not written in the test examples) could be something like this:
+Another example of an expectation, or **assertion** could be something like this:
 
 ```js
 expect(contactPage.form.header.getText()).toEqual("Contact");
 ```
 
-This expectation tells Protractor the following: get the text of the `header` element that is contained in the `form` component of the `contactPage` Page Object.
+This expectation tells Protractor the following: get the text of the `header` element that is contained in the `form` component of the `contactPage` Page Object, and check if it is equal to a certain text ("Contact").
 
 > Note that the `protractor-helper` library is not used in the above example.
 
@@ -200,14 +211,14 @@ Another example of expectation, now using the `protractor-helper` library could 
 helper.waitForTextToBePresentInElement(contactPage.form.header, "Contact");
 ```
 
-Differently from the previous expectation, this one tells Protractor the following: wait for the text "Contact" to be present in the element `header` of the `form` component, of the `contactPage` page object.
+Differently from the previous expectation, this one tells Protractor the following: wait for the text "Contact" to be present in the `header` element of the `form` component, of the `contactPage` page object.
 
 ## Conclusion
 
 By writing tests using not only Page Objects but also the concept of test components, we can benefit from:
 - having smaller classes that are easier to read and maintain.
 - we separate responsibilities, where Page Objects have only a relative URL and instances of the components they are composed by, while components define elements and methods.
-- we have better defined elements, because we pass the container element when defining the elements that will be used in the tests, making sure we will interact with the correct elements in cases of elements with the same CSS selector, but in different parts of the application
+- we have better defined elements, because we use the container element as parent element when defining the elements that will be used in the tests, making sure we will interact with the correct elements in cases of elements with the same CSS selector, but in different parts of the application.
 - we have more reliable test cases, because with define elements in a smarter way, but also because we use the `protractor-helper` library to interact with elements only when they are ready for it.
 - different page objects can share already existing test components without the need for code duplication.
 - and in case we need we can even work with parent and child components.
