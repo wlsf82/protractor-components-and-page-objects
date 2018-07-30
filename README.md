@@ -129,7 +129,12 @@ describe("given I access the relative URL 'contact'", () => {
 
                 contactPage.form.fillWithDataAndSubmit(data);
 
-                // @TODO: add expectations
+                expect(contactPage.nameField.getText()).toEqual("");
+                expect(contactPage.messageField.getText()).toEqual("");
+
+                const successMessage = element(by.css(".success-message"));
+
+                expect(successMessage.isDisplayed()).toBe(true);
             });
         });
     });
@@ -139,7 +144,8 @@ describe("given I access the relative URL 'contact'", () => {
             it("then all required fields are shown in red, meaning error", () => {
                 helper.clickWhenClickable(contactPage.form.submitButton);
 
-                // @TODO: add expectations
+                expect(contactPage.nameField.getAttribute("warning-color")).toEqual("red");
+                expect(contactPage.messageField.getAttribute("warning-color")).toEqual("red");
             });
         });
 
@@ -152,7 +158,7 @@ describe("given I access the relative URL 'contact'", () => {
 
                 contactPage.form.fillWithDataAndSubmit(invalidDataSet);
 
-                // @TODO: add expectations
+                expect(contactPage.messageField.getAttribute("warning-color")).toEqual("red");
             });
         });
     });
