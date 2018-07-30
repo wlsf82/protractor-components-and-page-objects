@@ -15,13 +15,13 @@ module.exports.config = ({
     baseUrl: "https://example.com/",
     specs: ["specs/*.spec.js"],
     onPrepare: () => {
+        browser.ignoreSynchronization = true;
         jasmine.getEnv().addReporter(new SpecReporter({
             displayFailuresSummary: true,
             displayFailedSpec: true,
             displaySuiteNumber: true,
             displaySpecDuration: true,
         }));
-        browser.ignoreSynchronization = true;
         jasmine.getEnv().addReporter(new Jasmine2HtmlReporter({
             savePath: "test-report",
             fileName: "protractor-components-and-page-objects",
@@ -30,8 +30,7 @@ module.exports.config = ({
             consolidate: true,
             takeScreenshotsOnlyOnFailures: true,
         }));
-
-        afterEach(() => {
+        beforeEach(() => {
             browser.manage().deleteAllCookies();
             return browser.executeScript("sessionStorage.clear(); localStorage.clear();");
         });
