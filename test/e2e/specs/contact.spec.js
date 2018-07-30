@@ -2,14 +2,14 @@ const helper = require("protractor-helper");
 
 const ContactPage = require("../page-objects/contact");
 
-describe("when accessing the relative URL 'contact'", () => {
+describe("given I access the relative URL 'contact'", () => {
     const contactPage = new ContactPage();
 
     beforeEach(() => browser.get(contactPage.relativeUrl));
 
     describe("happy path", () => {
-        describe("when submitting the form with valid data", () => {
-            it("cleans the fields and show a success message", () => {
+        describe("when I submit the form with valid data", () => {
+            it("then all fields are cleared and a success message is shown", () => {
                 const data = {
                     name: "John",
                     message: "Just an example message"
@@ -17,22 +17,28 @@ describe("when accessing the relative URL 'contact'", () => {
 
                 contactPage.form.fillWithDataAndSubmit(data);
 
-                // @TODO: add expectations
+                expect(contactPage.nameField.getText()).toEqual("");
+                expect(contactPage.messageField.getText()).toEqual("");
+
+                const successMessage = element(by.css(".success-message"));
+
+                expect(successMessage.isDisplayed()).toBe(true);
             });
         });
     });
 
     describe("alternate paths", () => {
-        describe("when submitting the form without filling name and message", () => {
-            it("shows required fields in red, meaning error", () => {
+        describe("when I submit the form without filling name and message", () => {
+            it("then all required fields are shown in red, meaning error", () => {
                 helper.clickWhenClickable(contactPage.form.submitButton);
 
-                // @TODO: add expectations
+                expect(contactPage.nameField.getAttribute("warning-color")).toEqual("red");
+                expect(contactPage.messageField.getAttribute("warning-color")).toEqual("red");
             });
         });
 
-        describe("when submitting the form with name but missing message", () => {
-            it("shows required field (message) in red, meaning error", () => {
+        describe("when I submit the form with a name but a missing message", () => {
+            it("then the required field (message) is shown in red, meaning error", () => {
                 const invalidDataSet = {
                     name: "Josh",
                     message: ""
@@ -40,7 +46,7 @@ describe("when accessing the relative URL 'contact'", () => {
 
                 contactPage.form.fillWithDataAndSubmit(invalidDataSet);
 
-                // @TODO: add expectations
+                expect(contactPage.messageField.getAttribute("warning-color")).toEqual("red");
             });
         });
     });
