@@ -12,7 +12,7 @@ module.exports.config = ({
             ]
         }
     },
-    baseUrl: "https://example.com/",
+    baseUrl: "https://example.com",
     specs: ["specs/*.spec.js"],
     onPrepare: () => {
         browser.ignoreSynchronization = true;
@@ -30,10 +30,6 @@ module.exports.config = ({
             consolidate: true,
             takeScreenshotsOnlyOnFailures: true,
         }));
-        beforeEach(() => {
-            browser.manage().deleteAllCookies();
-            return browser.executeScript("sessionStorage.clear(); localStorage.clear();");
-        });
     },
     jasmineNodeOpts: {
         onComplete: null,
