@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint test/**/*.js && eslint test/**/**/*.js",
     "lint:fix": "eslint test/**/*.js --fix && eslint test/**/**/*.js --fix",
-    "test": "rm -rf test-report && webdriver-manager update && protractor test/e2e/protractor.conf.js"
+    "test": "rm -rf test-report && webdriver-manager update --gecko false && protractor test/e2e/protractor.conf.js"
   },
   "keywords": [
     "protractor",
