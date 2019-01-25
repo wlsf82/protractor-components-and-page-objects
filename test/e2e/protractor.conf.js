@@ -1,4 +1,3 @@
-const Jasmine2HtmlReporter = require("protractor-jasmine2-html-reporter");
 const SpecReporter = require("jasmine-spec-reporter").SpecReporter;
 
 module.exports.config = {
@@ -11,7 +10,7 @@ module.exports.config = {
   baseUrl: "https://example.com",
   specs: ["specs/*.spec.js"],
   onPrepare: () => {
-    browser.ignoreSynchronization = true;
+    browser.waitForAngularEnabled(false);
     jasmine.getEnv().addReporter(
       new SpecReporter({
         displayFailuresSummary: true,
@@ -20,21 +19,5 @@ module.exports.config = {
         displaySpecDuration: true
       })
     );
-    jasmine.getEnv().addReporter(
-      new Jasmine2HtmlReporter({
-        savePath: "test-report",
-        fileName: "protractor-components-and-page-objects",
-        fixedScreenshotName: true,
-        cleanDestination: false,
-        consolidate: true,
-        takeScreenshotsOnlyOnFailures: true
-      })
-    );
-  },
-  jasmineNodeOpts: {
-    onComplete: null,
-    isVerbose: false,
-    showColors: true,
-    includeStackTrace: true
   }
 };

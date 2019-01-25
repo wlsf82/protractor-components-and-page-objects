@@ -1,7 +1,7 @@
 {
   "name": "protractor-components-and-page-objects",
   "version": "1.0.0",
-  "description": "project to demonstrate protractor tests using the concept of components",
+  "description": "project to demonstrate protractor tests using the concept of components and page objects",
   "repository": {
     "type": "git",
     "url": "https://github.com/wlsf82/protractor-components-and-page-objects"
@@ -9,20 +9,21 @@
   "scripts": {
     "lint": "eslint test/**/*.js && eslint test/**/**/*.js",
     "lint:fix": "eslint test/**/*.js --fix && eslint test/**/**/*.js --fix",
-    "test": "rm -rf test-report && webdriver-manager update --gecko false && protractor test/e2e/protractor.conf.js"
+    "pretest": "webdriver-manager update --gecko false",
+    "test": "protractor test/e2e/protractor.conf.js"
   },
   "keywords": [
     "protractor",
     "components",
-    "page-objects"
+    "page-objects",
+    "testing"
   ],
   "author": "Walmyr Filho <wlsf82@gmail.com> (http://walmyr-filho.com)",
   "license": "MIT",
   "devDependencies": {
     "eslint": "^4.18.1",
     "jasmine-spec-reporter": "^4.2.1",
-    "protractor": "^5.4.1",
-    "protractor-helper": "^3.5.6",
-    "protractor-jasmine2-html-reporter": "0.0.7"
+    "protractor": "^5.4.2",
+    "protractor-helper": "^3.7.2"
   }
 }

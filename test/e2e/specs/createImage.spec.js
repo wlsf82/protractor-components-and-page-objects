@@ -2,80 +2,103 @@ const helper = require("protractor-helper");
 
 const CreateImagePage = require("../page-objects/CreateImage");
 
-describe("given I access the relative URL '/create-image'", () => {
+describe("Given I access the relative URL '/create-image'", () => {
   const createImagePage = new CreateImagePage();
 
   beforeEach(() => browser.get(createImagePage.relativeUrl));
 
-  describe("happy path", () => {
-    describe("when filling the image url field with a valid url", () => {
-      const imageUrl = "http://example.com/some-image.png";
+  describe("Happy path", () => {
+    describe("When I fill the image URL field with a valid value", () => {
+      const imageUrlValue = "http://example.com/some-image.png";
 
       beforeEach(() =>
-        helper.fillFieldWithTextWhenVisible(
+        helper.fillFieldWithText(
           createImagePage.form.imageUrlField,
-          imageUrl
-        ));
+          imageUrlValue
+        )
+      );
 
-      it("then the image preview element uses the provided value in the 'src' attribute", () => {
+      it("Then the image preview element uses the provided value in the 'src' attribute", () => {
         expect(createImagePage.preview.image.getAttribute("src")).toEqual(
-          imageUrl
+          imageUrlValue
         );
       });
     });
 
-    describe("when I submit the form with valid data", () => {
+    describe("When I click the header's heading", () => {
+      beforeEach(() => helper.click(createImagePage.header.heading));
+
+      it("Then I'm redirected to the home page", () => {
+        helper.waitForUrlToBeEqualToExpectedUrl(browser.baseUrl);
+      });
+    });
+
+    describe("When I submit the form with valid data", () => {
+      let data;
+
       beforeEach(() => {
-        const data = {
+        data = {
           name: "Magic cube",
           description: "The nicest toy ever.",
-          imageUrl: "http://example.com/magic-cube.png"
+          imageUrlValue: "http://example.com/magic-cube.png"
         };
 
         createImagePage.form.fillWithDataAndSubmit(data);
       });
 
-      it("then all fields are cleared and a success message is shown", () => {
-        expect(createImagePage.form.nameField.getText()).toEqual("");
-        expect(createImagePage.form.descriptionField.getText()).toEqual("");
-        expect(createImagePage.form.imageUrlField.getText()).toEqual("");
+      it("Then all fields are cleared and a success message is shown", () => {
+        helper.waitForTextNotToBePresentInElement(
+          createImagePage.form.nameField,
+          data.name
+        );
+        helper.waitForTextNotToBePresentInElement(
+          createImagePage.form.descriptionField,
+          data.description
+        );
+        helper.waitForTextNotToBePresentInElement(
+          createImagePage.form.imageUrlField,
+          data.imageUrlValue
+        );
 
         const successMessage = element(by.css(".success-message"));
 
-        expect(successMessage.isDisplayed()).toBe(true);
+        helper.waitForElementVisibility(successMessage);
       });
     });
   });
 
-  describe("alternate paths", () => {
-    describe("when I submit the form without filling name, description, and image url", () => {
-      it("then all required fields are shown in red, meaning error", () => {
-        helper.clickWhenClickable(createImagePage.form.submitButton);
+  describe("Alternate paths", () => {
+    describe("When I submit the form without filling the name, description, and image URL", () => {
+      it("Then all required fields are shown in red, meaning error", () => {
+        helper.click(createImagePage.form.submitButton);
 
         expect(
-          createImagePage.form.nameField.getAttribute("warning-color")
-        ).toEqual("red");
+          createImagePage.form.nameField.getCssValue("background-color")
+        ).toEqual("rgb(255,0,0)");
         expect(
-          createImagePage.form.descriptionField.getAttribute("warning-color")
-        ).toEqual("red");
+          createImagePage.form.descriptionField.getCssValue("background-color")
+        ).toEqual("rgb(255,0,0)");
         expect(
-          createImagePage.form.imageUrlField.getAttribute("warning-color")
-        ).toEqual("red");
+          createImagePage.form.imageUrlField.getCssValue("background-color")
+        ).toEqual("rgb(255,0,0)");
       });
     });
 
-    describe("when I submit the form with a name and description, but a missing image url", () => {
-      it("then the required field (image url) is shown in red, meaning error", () => {
+    describe("When I submit the form with a name and description, but a missing image URL", () => {
+      beforeEach(() => {
         const dataSetWithMissingImageUrl = {
           name: "Boo",
-          description: "The nicest girl. From Monters Inc."
+          description: "The nicest kid! From Monters Inc.",
+          imageUrlValue: ""
         };
 
         createImagePage.form.fillWithDataAndSubmit(dataSetWithMissingImageUrl);
+      });
 
+      it("Then the required field (image URL) is shown in red, meaning error", () => {
         expect(
-          createImagePage.form.imageUrlField.getAttribute("warning-color")
-        ).toEqual("red");
+          createImagePage.form.imageUrlField.getCssValue("background-color")
+        ).toEqual("rgb(255,0,0)");
       });
     });
   });
