@@ -49,20 +49,26 @@ const PreviewComponent = require("../components/Preview");
 
 class CreateImage {
   constructor() {
-    this.relativeUrl = "/create-image";
+    this._relativeUrl = "/create-image";
 
     this.header = new HeaderComponent();
     this.form = new FormComponent();
     this.preview = new PreviewComponent();
+  }
+
+  get relativeUrl() {
+    return this._relativeUrl;
   }
 }
 
 module.exports = CreateImage;
 ```
 
-Note that it starts requiring the `FormComponent`, the `HeaderComponent` and the `PreviewComponent` in the beginning, and the class itself has only four attributes in the constructor, a `relativeUrl` with a string as its value (`"/create-image"`), a `header`, as an instance of the `HeaderComponent`, a `form`, as an instance of the `FormComponent`, and a `preview`, as an instance of the `PreviewComponent`.
+Note that it starts requiring the `FormComponent`, the `HeaderComponent` and the `PreviewComponent` in the beginning, and the class itself has only four attributes in the constructor, a `_relativeUrl` with a string as its value (`"/create-image"`), a `header`, as an instance of the `HeaderComponent`, a `form`, as an instance of the `FormComponent`, and a `preview`, as an instance of the `PreviewComponent`.
 
-In other words, the page object has no definition of the elements themselves, it just instantiates the components that compose it, which makes the code simpler and separates better the responsibilities.
+> Notice that the relative URL is prefixed with a underscore (`_`). In JavaScript, this means that such attribute should not be direclty accessed. To access it we need to use its `get` method, which is defined right after the constructor (`get relativeUrl()`).
+
+As you can see, the page object has no definition of web elements, it just instantiates the components that compose it, which makes the code simpler and separates better the responsibilities.
 
 ### Form component definition
 

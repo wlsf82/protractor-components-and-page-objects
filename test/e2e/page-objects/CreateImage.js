@@ -4,11 +4,15 @@ const PreviewComponent = require("../components/Preview");
 
 class CreateImage {
   constructor() {
-    this.relativeUrl = "/create-image";
+    this._relativeUrl = "/create-image";
 
     this.header = new HeaderComponent();
     this.form = new FormComponent();
     this.preview = new PreviewComponent();
+  }
+
+  get relativeUrl() {
+    return this._relativeUrl;
   }
 }
 
