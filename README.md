@@ -1,6 +1,6 @@
 # Protractor Components and Page Objects
 
-This sample project intends to demonstrate an architecture proposal for writing graphical user interface (GUI) tests with [Protractor](http://www.protractortest.org/#/) using a concept of Page Objectes composed by Components.
+This sample project intends to demonstrate an architecture proposal for writing graphical user interface (GUI) tests with [Protractor](http://www.protractortest.org/#/) using a concept of Page Objects composed by Components.
 
 ## The inspiration
 
