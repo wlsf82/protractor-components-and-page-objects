@@ -387,4 +387,4 @@ ___
 
 ___
 
-Made with 💚 by [Walmyr Filho](http://walmyr-filho.com)
+Made with 💚 by [Walmyr Filho](https://walmyr.dev)
