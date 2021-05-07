@@ -376,7 +376,7 @@ Differently from the previous expectation, this one tells Protractor the followi
 By writing tests using not only Page Objects but also the concept of Components, we can benefit from:
 - Having smaller classes that are easier to read and maintain.
 - We separate responsibilities, where Page Objects have only a relative URL and instances of the Components they are composed by, while Components define elements and methods.
-- We have better defined elements, because we use the `_parentElement` when defining the child elements that will be used in the tests, making sure we will interact with the correct elements in cases of elements in the DOM with part of the same CSS selector, but in different parts of the application.
+- We have better defined elements, because we use the `_parentElement` when defining the children elements that will be used in the tests, making sure we will interact with the correct elements in cases of elements in the DOM with part of the same CSS selector, but in different parts of the application.
 - We have more reliable test cases, because we define elements in a smarter way, but also because we use the `protractor-helper` library to interact with elements only when they are ready for interaction.
 - Different Page Objects can share already existing Components without the need for code duplication.
 - And in case we need we can even work with parent and child components, or with generic (or common) components, wherein the first case the parent component pass its `_parentElement` to the constructor of the child component, and wherein the second case the components that share common elements can use JavaScript inheritance (but these cases are not examplified here).
