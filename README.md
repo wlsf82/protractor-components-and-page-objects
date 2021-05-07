@@ -316,7 +316,7 @@ In the test file it's worth paying attention to some things.
 
 - The tests are written using the keywords **Given**, **When**, and **Then**. This helps on understanding the pre-requirements of each test case, what are the actions performed, and what are the expected conditions.
 - Only the page object is required at the top of the file. There is no need to require the components since they are already available through the Page Object.
-- When running the `browser.get()` in the `beforeEach` statement we pass the `relativeUrl` of the `createImagePage` as an argument (this will be concatenated with the `baseUrl` defined in the `protractor.conf.js` file). If the relative URL changes, we just need to update it in a single place, which is the configuration file.
+- When running the `browser.get()` in the `beforeEach` statement we pass the `relativeUrl` of the `createImagePage` as an argument (this will be concatenated with the `baseUrl` defined in the `protractor.conf.js` file). If the base URL changes, we just need to update it in a single place, which is the configuration file.
 - When running the test's **actions** and **assertions** (from [arrange, **act**, **assert**](http://wiki.c2.com/?ArrangeActAssert)), the following structure is used:
 
 ```js
