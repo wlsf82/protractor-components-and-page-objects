@@ -174,7 +174,7 @@ class Preview {
   constructor() {
     this._parentElement = element(by.css(".preview"));
 
-    this._title = this._parentElement.element(by.css("h1"));
+    this._title = this._parentElement.element(by.css("h2"));
     this._image = this._parentElement.element(by.css("img"));
   }
 
