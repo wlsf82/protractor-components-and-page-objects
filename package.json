@@ -23,7 +23,7 @@
   "devDependencies": {
     "eslint": "^4.18.1",
     "jasmine-spec-reporter": "^4.2.1",
-    "protractor": "^5.4.2",
+    "protractor": "^5.4.4",
     "protractor-helper": "^4.0.14"
   }
 }
